@@ -1,0 +1,176 @@
+{
+    "prod_premium": {
+        "ppe.prod_premium": [
+            "ppe.prod_premium_amt"
+        ]
+    },
+    "sub_channel_cd": {
+        "rdc.sub_channel_cd": [
+            "rdc.sub_chnl_cd"
+        ]
+    },
+    "lob_key_cd": {
+        "ppe.lob_key_cd": [
+            "ppe.lob_cd"
+        ]
+    },
+    "advisor_id": {
+        "rsm.advisor_id": [
+            "rsm.advsr_mdm_id"
+        ]
+    },
+    "app_type_key_cd": {
+        "ppe.app_type_key_cd": [
+            "ppe.applctn_typ_cd"
+        ]
+    },
+    "rsm_key": {
+        "ah.rsm_key": [
+            "ah.rsm_key"
+        ]
+    },
+    "lob_key_desc": {
+        "ppe.lob_key_desc": [
+            "ppe.lob_desc"
+        ]
+    },
+    "status_cd_key_id": {
+        "psc.status_cd_key_id": [
+            "/*status_cd_key_id */"
+        ],
+        "ppe.status_cd_key_id": [
+            "/*status_cd_key_id */"
+        ]
+    },
+    "product_cd": {
+        "pr.product_cd": [
+            "pr.prod_cd"
+        ]
+    },
+    "firm_cdw_id": {
+        "df.firm_cdw_id": [
+            "df.firm_cdw_id"
+        ]
+    },
+    "target_premium": {
+        "ppe.target_premium": [
+            "ppe.tgt_premium_amt"
+        ]
+    },
+    "channel_key_id": {
+        "f.channel_key_id": [
+            "f.dim_chnl_id"
+        ],
+        "rdc.channel_key_id": [
+            "rdc.dim_chnl_id"
+        ]
+    },
+    "product_key_id": {
+        "pr.product_key_id": [
+            "pr.dim_prod_id"
+        ],
+        "f.product_key_id": [
+            "f.dim_prod_id"
+        ]
+    },
+    "advisor_hierarchy_key_id": {
+        "ah.advisor_hierarchy_key_id": [
+            "ah.advisor_hierarchy_key_id"
+        ],
+        "f.advisor_hierarchy_key_id": [
+            "/*advisor_hierarchy_key_id */"
+        ]
+    },
+    "product_type_desc": {
+        "pr.product_type_desc": [
+            "pr.prod_typ_desc"
+        ]
+    },
+    "status_cd_desc": {
+        "psc.status_cd_desc": [
+            "psc.plcy_status_desc"
+        ]
+    },
+    "agency_cdw_id": {
+        "rda.agency_cdw_id": [
+            "rda.agcy_cdw_id"
+        ]
+    },
+    "policy_key_id": {
+        "ppe.policy_key_id": [
+            "ppe.dim_plcy_id"
+        ],
+        "f.policy_key_id": [
+            "f.dim_plcy_id"
+        ],
+        "rdp.policy_key_id": [
+            "rdp.dim_plcy_id"
+        ]
+    },
+    "agency_key_id": {
+        "rda.agency_key_id": [
+            "rda.agcy_mdm_id"
+        ],
+        "ah.agency_key_id": [
+            "ah.agency_key_id"
+        ]
+    },
+    "policy_number": {
+        "ppe.policy_number": [
+            "ppe.plcy_num"
+        ]
+    },
+    "transaction_group_cd": {
+        "f.transaction_group_cd": [
+            "f.trx_grp_cd"
+        ]
+    },
+    "rop_threshold_premium": {
+        "ppe.rop_threshold_premium": [
+            "ppe.rop_thrshld_amt"
+        ]
+    },
+    "product_sub_group_cd": {
+        "pr.product_sub_group_cd": [
+            "pr.prod_sub_grp_cd"
+        ]
+    },
+    "is_compensible_flg": {
+        "f.is_compensible_flg": [
+            "f.is_compensbl_flg"
+        ]
+    },
+    "total_policy_val": {
+        "rdp.total_policy_val": [
+            "/*total_policy_val */"
+        ]
+    },
+    "full_name": {
+        "rsm.full_name": [
+            "rsm.advsr_full_nm"
+        ]
+    },
+    "product_type_cd": {
+        "pr.product_type_cd": [
+            "pr.prod_typ_cd"
+        ]
+    },
+    "channel_cd": {
+        "rdc.channel_cd": [
+            "rdc.dim_chnl_id"
+        ]
+    },
+    "firm_key_id": {
+        "df.firm_key_id": [
+            "df.dim_firm_id"
+        ],
+        "f.firm_key_id": [
+            "f.dim_firm_id"
+        ]
+    },
+    "status_type": {
+        "psc.status_type": [
+            "psc.plcy_status_cd"
+        ]
+    }
+}

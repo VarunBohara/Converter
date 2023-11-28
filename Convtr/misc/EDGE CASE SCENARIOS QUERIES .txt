@@ -1,0 +1,120 @@
+--1. UPDATING TABLE AND COLUMN NAMES
+--INPUT 
+select 
+concat(
+curr_address_line1,
+curr_address_line2,
+curr_city ,
+curr_zip_cd,
+curr_state) as 'full address' 
+from rpt_dim_advisor as rda 
+
+--OUTPUT
+select 
+concat(
+currnt_addr_ln_1,
+currnt_addr_ln_2,
+currnt_city_nm ,
+currnt_zip_cd,
+currnt_state_cd) as 'full address' 
+from dim_advsr as rda
+
+
+--2.SOURCE COLUMN MISSING FROM STTM 
+--INPUT
+select 
+concat(
+curr_address_line1,
+curr_address_line2,
+curr_city ,
+curr_zip_cd,
+curr_state) as 'full address' 
+from rpt_dim_advisor as rda 
+where curr_zip_cd in 
+(select sas_zip_cd 
+from rpt_dim_sas_office 
+where active_ind=1);
+
+--OUTPUT
+select 
+concat(
+currnt_addr_ln_1,
+currnt_addr_ln_2,
+currnt_city_nm ,
+currnt_zip_cd,
+currnt_state_cd) as 'full address' 
+from dim_advsr as rda 
+where currnt_zip_cd in 
+(select  '' as sas_zip_cd  
+from dim_sas_ofc 
+where  '' as active_ind =1);
+
+--3. TARGET COLUMN MISSING FROM STTM
+--INPUT
+select 
+status_cd as 'status code',
+status_cd_desc as 'desciption' 
+from ref_is_pend_status_code as ripsc 
+
+ --OUTPUT
+ select 
+'status_cd' as 'status code',
+ '' as status_cd_desc  as 'desciption' 
+from ref_is_pend_status_code as ripsc 
+
+--4. SOURCE/TARGET TABLE MISSING FROM STTM
+--INPUT
+select 
+status_cd as 'status code',
+status_cd_desc as 'desciption' 
+from ref_is_pend_status_code as ripsc 
+
+--OUTPUT
+with ref_is_pend_status_code as (
+select 1 as status_cd_key_id, 
+'' as status_cd, 
+'' as status_cd_desc, 
+'' as status_type, 
+'' as display_ind, 
+'' as src_sys_name, 
+1 as batch_num, 
+1 as load_dts, 
+'' as lst_updt_usr, 
+1 as lst_updt_dts
+)
+select 
+'status_cd' as 'status code',
+ '' as status_cd_desc  as 'desciption' 
+from ref_is_pend_status_code as ripsc 
+
+--5.TABLES WITH ALIAS
+--INPUT
+select 
+dd.day_date,
+from dim_day as dd  
+where dd.week_key_id in 
+(select week_key_id  from dim_week as dw) 
+and lincoln_holiday_ind=1;
+--OUTPUT
+select 
+dd.full_dt,
+from dim_dayio as dd  
+where dd.yr_wk_num in 
+(select yr_wk_num  from dim_wk as dw) 
+and lincoln_holiday_flg=1;
+
+--INPUT 
+with advise as 
+(select * from 
+fct_daily_trans_smry as fdts 
+left join 
+rpt_dim_advisor as rda
+on fdts.advisor_key_id = rda.advisor_key_id)
+
+--OUTPUT
+with advise as 
+(select * from 
+fct_dly_plcy_trx as fdts 
+left join 
+dim_advsr as rda
+on fdts.advsr_mdm_id = rda.advsr_mdm_id)

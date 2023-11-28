@@ -1,0 +1,11 @@
+{
+    "rpt_dim_firm": "dim_firm",
+    "rpt_dim_channel": "bridge channel subchannel relationship",
+    "rpt_dim_advisor": "dim_advsr",
+    "rpt_dim_agency": "dim_agcy",
+    "rpt_dim_product": "dim_prod",
+    "fct_daily_trans_smry": "fct_dly_plcy_trx",
+    "rpt_dim_policy": "dim_plcy",
+    "rpt_dim_is_policy_pend_ext": "dim_plcy",
+    "ref_is_pend_status_code": "dim_plcy"
+}

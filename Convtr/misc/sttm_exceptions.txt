@@ -1,0 +1,40 @@
+EXCEPTION: MoreThanOneRowRetrieved
+CHECK STTM
+f : fct_daily_trans_smry : firm_key_id
+                 DW Table    DW Column Physical Table Name  \
+612  fct_daily_trans_smry  firm_key_id    fct_dly_plcy_trx   
+642  fct_daily_trans_smry  firm_key_id    fct_dly_plcy_trx   
+
+    Physical Column Name  
+612          dim_firm_id  
+642          src_firm_id  
+
+EXCEPTION: MoreThanOneRowRetrieved
+CHECK STTM
+rdp : rpt_dim_policy : policy_key_id
+            DW Table      DW Column Physical Table Name Physical Column Name
+1015  rpt_dim_policy  policy_key_id            dim_plcy          dim_plcy_id
+1048  rpt_dim_policy  policy_key_id            dim_plcy        plcy_mastr_id
+
+EXCEPTION: MoreThanOneRowRetrieved
+CHECK STTM
+df : rpt_dim_firm : firm_key_id
+         DW Table    DW Column Physical Table Name Physical Column Name
+286  rpt_dim_firm  firm_key_id            dim_firm          dim_firm_id
+287  rpt_dim_firm  firm_key_id            dim_firm          firm_mdm_id
+296  rpt_dim_firm  firm_key_id            dim_firm    firm_pty_mastr_id
+
+EXCEPTION: MoreThanOneRowRetrieved
+CHECK STTM
+df : rpt_dim_firm : firm_key_id
+         DW Table          DW Column               Physical Table Name       Physical Column Name
+639  fct_daily_trans_smry  transaction_group_cd    fct_dly_plcy_trx          dim_trx_grp_id
+1549  fct_daily_trans_smry  transaction_group_cd    fct_dly_plcy_trx          trx_grp_cd
+
+
+EXCEPTION: MoreThanOneRowRetrieved
+CHECK STTM
+df : rpt_dim_firm : firm_key_id
+         DW Table          DW Column    Physical Table Name  Physical Column Name
+445  rpt_dim_product  product_key_id    dim_prod             dim_prod_id
+464  rpt_dim_product  product_key_id    dim_prod             prod_hier_detl_id

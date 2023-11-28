@@ -1,0 +1,327 @@
+with peers_position as(
+select
+[a15].[External_Wholesale_Group_Cd] [Wholesale_Group_Cd],
+[a12].[External_Wholesaler_Key_Id] [Ext_Wholesaler_Id],
+ntile(4) over (
+partition by [a15].[External_Wholesale_Group_Cd]
+order by
+sum(
+(
+([a11].[Total_Sale_Amt] / 1000) * [a12].[Split_Percentage]
+)
+) desc
+) [Quartile]
+from
+[LFGDW].[FCT_DAILY_TRANS_SMRY] [a11]
+join [LFGDW].[RPT_TERRITORY_EXTERNAL_REL] [a12] on (
+[a11].[Territory_Key_Id] = [a12].[Territory_Key_Id]
+)
+join [LFGDW].[DIM_DAY] [a13] on (
+[a11].[Date_Key_Id] = [a13].[Date_Key_Id]
+)
+join [LFGDW].[DIM_WEEK] [a14] on (
+[a13].[Week_Key_Id] = [a14].[Week_Key_Id]
+)
+join [LFGDW].[RPT_DIM_EXTERNAL_WHOLESALER] [a15] on (
+[a12].[External_Wholesaler_Key_Id] = [a15].[EXTERNAL_WHOLESALER_ID]
+)
+where
+(
+[a11].[Transaction_Group_Cd] in ('F')
+and [a11].[Is_Compensible_Flg] in ('Y')
+and [a15].[External_Wholesale_Group_Cd] in (
+'ANN03', 'ANN17', 'ANN18', 'ANN19',
+'ANN20'
+)
+and [a15].[External_Wholesaler_Name] not like 'TBA%'
+and (
+(
+dateadd(
+week,
+datediff(
+week, 0, [a14].[Week_of_Year_Begin_Date]
+),
+-1
+)
+) in (
+select
+dateadd(
+week,
+datediff(
+week, 0, [c21].[Week_of_Year_Begin_Date]
+),
+-1
+)
+from
+[LFGDW].[DIM_WEEK] [c21] cross
+join [LFGDW].[VW_CURR_BUSINESS_DAY] [c23]
+where
+dateadd(
+week,
+datediff(
+week, 0, [c21].[Week_of_Year_Begin_Date]
+),
+-1
+) between dateadd(
+day,
+datediff(
+dd, [c23].[Sale_Dt], [c23].[Week_Begin_Date]
+),
+dateadd(ww,-13, [c23].[Sale_Dt])
+)
+and dateadd(
+day,
+datediff(
+dd, [c23].[Sale_Dt], [c23].[Week_Begin_Date]
+),
+dateadd(ww,-2, [c23].[Sale_Dt])
+)
+)
+)
+)
+group by
+[a15].[External_Wholesale_Group_Cd],
+[a12].[External_Wholesaler_Key_Id]
+),
+
+
+
+
+
+
+peers_top as (
+select
+[Ext_Wholesaler_Id]
+from
+peers_position
+where
+Quartile = 1
+)
+
+
+
+
+
+
+select
+a11.Activity_Key_Id Activity_Key_Id,
+[a111].[DIVISIONAL_SALES_MANAGER_ID] [DIVISIONAL_SALES_MANAGER_ID],
+max(
+[a111].[Divisional_Sales_Manager_Name]
+) [Divisional_Sales_Manager_Name],
+[a111].[Divisional_Sales_Manager_Logon_Id] [DSM_Logon_Id],
+[a12].[External_Wholesaler_Key_Id] [Ext_Wholesaler_Id],
+max(
+[a111].[External_Wholesaler_Name]
+) [Ext_Wholesaler_Name],
+[a111].[External_Wholesaler_Logon_Id] [EW_Logon_Id],
+dateadd(
+week,
+datediff(
+week, 0, [a14].[Week_of_Year_Begin_Date]
+),
+-1
+) [Week_Num_Overall],
+
+
+
+
+
+case when
+(
+(
+dateadd(
+week,
+datediff(
+week, 0, [a14].[Week_of_Year_Begin_Date]
+),
+-1
+)
+) in (
+select
+dateadd(
+week,
+datediff(
+week, 0, [c21].[Week_of_Year_Begin_Date]
+),
+-1
+)
+from
+[LFGDW].[DIM_WEEK] [c21] cross
+join [LFGDW].[VW_CURR_BUSINESS_DAY] [c23]
+where
+dateadd(
+week,
+datediff(
+week, 0, [c21].[Week_of_Year_Begin_Date]
+),
+-1
+) between dateadd(
+day,
+datediff(
+dd, [c23].[Sale_Dt], [c23].[Week_Begin_Date]
+),
+dateadd(ww,-8, [c23].[Sale_Dt])
+)
+and dateadd(
+day,
+datediff(
+dd, [c23].[Sale_Dt], [c23].[Week_Begin_Date]
+),
+dateadd(ww,-1, [c23].[Sale_Dt])
+)
+)
+)
+then 1 else 0 end [FLAG_8_weeks],
+
+
+
+
+
+max(
+concat(
+'Week Starts ',
+left([a14].[Week_Business_Desc], 10)
+)
+) [CustCol_66],
+max(
+left([a14].[Week_Business_Desc], 10)
+) [Week_Business_Desc],
+[a11].[Deleted_Flg] [Deleted_Flag],
+[a111].[External_Wholesale_Group_Cd] [Wholesale_Group_Cd],
+max([a113].[Wholesale_Group_Desc]) [Wholesale_Group_Desc],
+case when [a19].[Product_Sub_Group_Cd] = 'DCMS' then 'RPS' else [a19].[Product_Sub_Group_Cd] end [Product_Sub_Group],
+max(
+[a112].[Product_Sub_Group_Desc]
+) [Product_Sub_Group_Desc],
+[a11].[Activity_Type_Cd] [Activity_Type_Cd],
+[a11].[Activity_Closed_Flg] [Activity_Closed_Flag],
+[a110].[Reporting_Ind] [Reporting_Ind],
+count(
+distinct [a11].[Activity_Key_Id]
+) [ # Activities, last 8 weeks, not deleted, reported, closed]
+from
+[LFGDW].[FCT_ACTIVITY] [a11]
+join [LFGDW].[RPT_TERRITORY_EXTERNAL_REL] [a12] on (
+[a11].[Territory_Key_Id] = [a12].[Territory_Key_Id]
+)
+join [LFGDW].[DIM_DAY] [a13] on (
+[a11].[Date_Key_Id] = [a13].[Date_Key_Id]
+)
+join [LFGDW].[DIM_WEEK] [a14] on (
+[a13].[Week_Key_Id] = [a14].[Week_Key_Id]
+)
+join [LFGDW].[RPT_DIM_PRODUCT] [a15] on (
+[a11].[Product_Key_Id] = [a15].[Product_Key_Id]
+)
+join [LFGDW].[RPT_DIM_PRODUCT_PLAN_CATEGORY] [a16] on (
+[a15].[Product_Plan_Category_Cd] = [a16].[Product_Plan_Category_Cd]
+)
+join [LFGDW].[RPT_DIM_PRODUCT_SUITE] [a17] on (
+[a16].[Product_Suite_Cd] = [a17].[Product_Suite_Cd]
+)
+join [LFGDW].[RPT_DIM_PRODUCT_TYPE] [a18] on (
+[a17].[Product_Type_Cd] = [a18].[Product_Type_Cd]
+)
+join [LFGDW].[RPT_DIM_PRODUCT_CD] [a19] on (
+[a18].[PRODUCT_CD] = [a19].[PRODUCT_CD]
+)
+join [LFGDW].[RPT_DIM_ACTIVITY_TYPE] [a110] on (
+[a11].[Activity_Type_Key_Id] = [a110].[Activity_Type_Key_Id]
+)
+join [LFGDW].[RPT_DIM_EXTERNAL_WHOLESALER] [a111] on (
+[a12].[External_Wholesaler_Key_Id] = [a111].[EXTERNAL_WHOLESALER_ID]
+)
+join [LFGDW].[RPT_DIM_PRODUCT_SUB_GROUP] [a112] on (
+case when [a19].[Product_Sub_Group_Cd] = 'DCMS' then 'RPS' else [a19].[Product_Sub_Group_Cd] end = case when [a112].[Product_Sub_Group_Cd] = 'DCMS' then 'RPS' else [a112].[Product_Sub_Group_Cd] end
+)
+join [LFGDW].[REF_WHOLESALE_GROUP] [a113] on (
+[a111].[External_Wholesale_Group_Cd] = [a113].[Wholesale_Group_Cd]
+)
+where
+(
+case when [a19].[Product_Sub_Group_Cd] = 'DCMS' then 'RPS' else [a19].[Product_Sub_Group_Cd] end in ('VA', 'FA')
+and [a111].[External_Wholesale_Group_Cd] in (
+'ANN03', 'ANN17', 'ANN18', 'ANN19',
+'ANN20'
+)
+--and [a11].[Activity_Type_Cd] is not null
+and [a11].[Deleted_Flg] in ('N')
+--and [a11].[Activity_Closed_Flg] in ('Y')
+--and [a11].[Title_Assigned_To] in ('EXT')
+--and [a110].[Reporting_Ind] in ('Y')
+and [a12].[External_Wholesaler_Key_Id] in (
+select
+*
+from
+peers_top
+)
+)
+and (
+(
+dateadd(
+week,
+datediff(
+week, 0, [a14].[Week_of_Year_Begin_Date]
+),
+-1
+)
+) in (
+select
+dateadd(
+week,
+datediff(
+week, 0, [c21].[Week_of_Year_Begin_Date]
+),
+-1
+)
+from
+[LFGDW].[DIM_WEEK] [c21] cross
+join [LFGDW].[VW_CURR_BUSINESS_DAY] [c23]
+where
+dateadd(
+week,
+datediff(
+week, 0, [c21].[Week_of_Year_Begin_Date]
+),
+-1
+) between dateadd(
+day,
+datediff(
+dd, [c23].[Sale_Dt], [c23].[Week_Begin_Date]
+),
+dateadd(ww,-8, [c23].[Sale_Dt])
+)
+and dateadd(
+day,
+datediff(
+dd, [c23].[Sale_Dt], [c23].[Week_Begin_Date]
+),
+dateadd(ww,-1, [c23].[Sale_Dt])
+)
+)
+)
+group by
+[a111].[DIVISIONAL_SALES_MANAGER_ID],
+[a111].[Divisional_Sales_Manager_Logon_Id],
+[a12].[External_Wholesaler_Key_Id],
+[a111].[External_Wholesaler_Logon_Id],
+[a111].[National_Sales_Manager_Id],
+[a111].[National_Sales_Manager_Logon_Id],
+[a111].[Product_Head_Logon_Id],
+[a111].[Product_Head_Id],
+dateadd(
+week,
+datediff(
+week, 0, [a14].[Week_of_Year_Begin_Date]
+),
+-1
+),
+[a11].[Activity_Key_Id],
+[a11].[Deleted_Flg],
+[a111].[External_Wholesale_Group_Cd],
+case when [a19].[Product_Sub_Group_Cd] = 'DCMS' then 'RPS' else [a19].[Product_Sub_Group_Cd] end,
+[a11].[Activity_Type_Cd],
+[a11].[Activity_Closed_Flg],
+[a11].[Title_Assigned_To],
+[a110].[Reporting_Ind]
